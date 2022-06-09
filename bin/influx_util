@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'influx_util'
+InfluxUtil.run
