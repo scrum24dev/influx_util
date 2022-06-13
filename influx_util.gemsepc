@@ -1,0 +1,13 @@
+Gem::Specification.new do |s|
+  s.name        = 'influx_util'
+  s.version     = '0.6'
+  s.summary     = 'Influxdb backup and restore command wrapper'
+  s.description = 'A simple influxdb backup and restore command wrapper'
+  s.authors     = ['Andy Wang']
+  s.email       = 'andy.wang@trillioninnovations.com'
+  s.files       = `git ls-files`.split("\n")
+  s.license     = 'MIT'
+
+  s.executables << 'influx_util'
+  s.required_ruby_version = '>= 2.3.3'
+end
