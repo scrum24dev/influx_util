@@ -9,7 +9,7 @@ module InfluxUtil
     CONFIG_DIR_PATH  = File.join(Dir.home, '.influx_util')
     CONFIG_FILE_PATH = File.join(CONFIG_DIR_PATH, 'config.yml')
 
-    # set up required folders and files
+    # 建立必要的資料夾和檔案
     FileUtils.mkdir_p(CONFIG_DIR_PATH) if !File.exist?(CONFIG_DIR_PATH)
 
     Misc.write_file(CONFIG_FILE_PATH, {

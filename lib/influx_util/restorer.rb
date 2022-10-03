@@ -3,11 +3,11 @@ require 'influx_util/log'
 
 module InfluxUtil
   class Restorer
-    attr_reader :temp_db_name, :db_name, :rp_name, :shard_id, :year, :new_db_name
+    attr_reader :temp_db_name, :db_name, :rp_name, :shard_id, :year, :import_db_name
 
     def self.check(args)
       errs = []
-      [:db, :rp, :new_db].each do |key|
+      [:db, :rp, :import_db].each do |key|
         errs << "#{key} is not specifed" if args[key].nil?
       end
 
@@ -15,12 +15,12 @@ module InfluxUtil
     end
 
     def initialize(args)
-      @db_name      = args[:db]
-      @rp_name      = args[:rp]
-      @new_db_name  = args[:new_db]
-      @temp_db_name = "temp_#{db_name}"
-      @shard_id     = args[:sid].nil? ? nil : args[:sid].to_i
-      @year         = args[:year].nil? ? nil : args[:year].to_i
+      @db_name        = args[:db]
+      @rp_name        = args[:rp]
+      @import_db_name = args[:import_db]
+      @temp_db_name   = "temp_#{db_name}"
+      @shard_id       = args[:sid].nil? ? nil : args[:sid].to_i
+      @year           = args[:year].nil? ? nil : args[:year].to_i
     end
 
     def operate
@@ -38,7 +38,7 @@ module InfluxUtil
       Log.info "temp database ->  #{temp_db_name}"
       Log.info("restore candidate ids -> #{items.map(&:id)}")
 
-      run_influx_api("create database #{new_db_name}")
+      run_influx_api("create database #{import_db_name}")
       run_influx_api("drop database #{temp_db_name}")
 
       sleep_time = 20
@@ -56,7 +56,7 @@ module InfluxUtil
         Log.info "[sleep] #{sleep_time}"
         sleep sleep_time # https://github.com/node-influx/node-influx/issues/344
 
-        run_influx_api("SELECT * INTO #{new_db_name}..:MEASUREMENT FROM /.*/ GROUP BY *", db: temp_db_name) 
+        run_influx_api("SELECT * INTO #{import_db_name}..:MEASUREMENT FROM /.*/ GROUP BY *", db: temp_db_name) 
 
         Log.info "[sleep] #{sleep_time}"
         sleep sleep_time # https://github.com/node-influx/node-influx/issues/344

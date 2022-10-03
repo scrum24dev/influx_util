@@ -58,8 +58,6 @@ module InfluxUtil
       Log.info "[cmd] -> #{cmd}"
       influx_output = `#{cmd}`
       Log.info "[cmd output] -> #{influx_output}"
-
-      system(cmd)
     end
 
     def record_backup_shard_id(last_backup_sid)
@@ -92,8 +90,13 @@ module InfluxUtil
       shard_ids   = shard_items.map{ |v| v.id }
 
       Log.info("backup candidate ids -> #{shard_ids.to_s}")
+      if shard_ids.empty?
+        Log.info("shard_ids is empty")
+        return []
+      end
+
       if shard_ids.max < shard_id
-        Log.info("id is overflow -> #{v.db}.#{v.rp}.#{v.id}")
+        Log.info("id is overflow -> #{shard_id}")
         return []
       end
 

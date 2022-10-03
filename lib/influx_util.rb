@@ -10,8 +10,8 @@ require 'optparse'
 require 'ostruct'
 
 
-# Commands
-# TODO: Error Handling
+# 命令處理
+# TODO: 錯誤處理
 module InfluxUtil
   T_FORMAT = '%Y%m%d%H%S'
   API_URL  = 'http://127.0.0.1:8086/query'
@@ -88,8 +88,8 @@ module InfluxUtil
             options[:sid] = v
           end
   
-          opts.on('-n new_db', '--new_db new_db', '[required] name of the new database') do |v|
-            options[:new_db] = v
+          opts.on('-n import_db', '--import_db import_db', '[required] name of the imported database') do |v|
+            options[:import_db] = v
           end
   
           opts.on('-y year', '--year year', 'restore shard by the year, it ignore "-s id" argument if specified') do |v|
@@ -117,7 +117,7 @@ module InfluxUtil
   end
 
   def self.run
-     # check if running
+     # 檢查是否在執行
     pid_file_path = File.join(Config.dir_path, 'pid')
     abort("process #{Misc.get_file_content(pid_file_path)} is running") if File.exist?(pid_file_path)
 
@@ -128,14 +128,14 @@ module InfluxUtil
     end
 
     begin
-      # write pid
+      # 寫pid
       Misc.write_file(pid_file_path, Process.pid)
 
-      # analyze args
+      # 分析參數
       err, op = parse_args
       abort(err) if !err.nil?
 
-      # run
+      # 執行
       op.operate
     rescue => e
       if e.class == OptionParser::MissingArgument
